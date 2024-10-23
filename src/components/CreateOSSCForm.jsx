@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useMutation, gql } from '@apollo/client';
 
-// GraphQL queries
 const GET_REGIONS = gql`
   query REGIONS {
     base_regions {
@@ -10,6 +9,7 @@ const GET_REGIONS = gql`
     }
   }
 `;
+
 const GET_ZONES = gql`
   query GET_ZONES($where: base_zone_bool_exp) {
     base_zone(where: $where) {
@@ -24,6 +24,31 @@ const GET_WOREDA = gql`
     base_woreda(where: $where) {
       id
       name
+    }
+  }
+`;
+
+const CREATE_OSSC = gql`
+  mutation CreateOSSC(
+    $osccName: String!,
+    $description: String!,
+    $houseNumber: String!,
+    $phoneNumber: String!,
+    $zoneId: uuid!,
+    $woredaId: uuid!
+  ) {
+    insert_oscc_center(objects: {
+      oscc_name: $osccName,
+      description: $description,
+      house_number: $houseNumber,
+      phone_number: $phoneNumber,
+      zone_id: $zoneId,
+      woreda_id: $woredaId
+    }) {
+      returning {
+        id
+        oscc_name
+      }
     }
   }
 `;
@@ -48,7 +73,7 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
         region_id: { _eq: selectedRegionId }
       }
     },
-    skip: !selectedRegionId, // Skip the query if no region is selected
+    skip: !selectedRegionId, 
   });
 
   // Fetch woredas based on the selected zone
@@ -58,16 +83,34 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
         zone_id: { _eq: selectedZoneId }
       }
     },
-    skip: !selectedZoneId, // Skip the query if no zone is selected
+    skip: !selectedZoneId, 
   });
-  
+
+  // Mutation for submitting the form
+  const [createOSSC, { loading: submitting, error: submitError }] = useMutation(CREATE_OSSC, {
+    onCompleted: (data) => {
+      console.log('OSSC Center created:', data);
+      onClose(); // Close the modal upon success
+    },
+    onError: (error) => {
+      console.error('Error creating OSSC:', error);
+    }
+  });
 
   if (!isOpen) return null; // Don't render if the modal is closed
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Creating OSSC Center with data:', { ...formData, selectedZoneId, selectedWoredaId });
-    onClose(); 
+    createOSSC({
+      variables: {
+        osccName: formData.osccName,
+        description: formData.description,
+        houseNumber: formData.houseNumber,
+        phoneNumber: formData.phoneNumber,
+        zoneId: selectedZoneId,
+        woredaId: selectedWoredaId
+      }
+    });
   };
 
   const handleRegionChange = (event) => {
@@ -81,9 +124,8 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
     const zoneId = event.target.value;
     setSelectedZoneId(zoneId);
     setSelectedWoredaId(''); 
-    
   };
- 
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white rounded-lg p-6 w-11/12 max-w-6xl relative">
@@ -92,7 +134,7 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
           className="absolute text-3xl top-2 right-2 text-red-500 hover:text-red-900"
           aria-label="Close"
         >
-          &times; 
+          &times;
         </button>
         <div className="text-xl font-semibold m-8"></div>
         <form onSubmit={handleSubmit}>
@@ -157,7 +199,7 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
                 onChange={handleZoneChange}
                 className="w-full border border-gray-300 p-4 rounded-lg"
                 required
-                disabled={!selectedRegionId} 
+                disabled={!selectedRegionId}
               >
                 <option value="">Select a zone</option>
                 {loadingZones && <option>Loading zones...</option>}
@@ -179,7 +221,7 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
                 onChange={(e) => setSelectedWoredaId(e.target.value)}
                 className="w-full border border-gray-300 p-4 rounded-lg"
                 required
-                disabled={!selectedZoneId} // Disable if no zone is selected
+                disabled={!selectedZoneId}
               >
                 <option value="">Select a woreda</option>
                 {loadingWoredas && <option>Loading woredas...</option>}
@@ -224,12 +266,19 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
             </div>
           </div>
 
+          {submitError && (
+            <div className="text-red-500 mb-4">
+              Error submitting form: {submitError.message}
+            </div>
+          )}
+
           <div className="flex justify-end">
             <button
               type="submit"
               className="bg-blue-500 text-white px-24 py-3 rounded-lg"
+              disabled={submitting}
             >
-              Create
+              {submitting ? 'Submitting...' : 'Create'}
             </button>
           </div>
         </form>
