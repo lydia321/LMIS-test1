@@ -59,17 +59,13 @@ const DashboardPage = () => {
 
   return (
     <div className="h-screen bg-gradient-to-bl from-[#0576e6] to-[#0b3d91] flex flex-col items-center justify-center">
-      {/* Left Side - Images */}
       <div className="absolute top-14 left-0 p-4">
         <img src={icon1} alt="First Image" className="w-10 h-10 mb-24 ml-3" />
         <img src={nav} alt="Second Image" className="w-16 h-12 ml-1" />
       </div>
 
-      {/* Lighter Blue Section in the middle */}
       <div className="bg-white bg-opacity-15 rounded-3xl p-12 shadow-md w-[92%] h-[90%] ml-20 flex flex-col">
-        {/* Search Bar and Create Button */}
         <div className="flex justify-between items-center mb-6 mt-16">
-          {/* OSCC Label and Search Bar */}
           <div>
             <label htmlFor="search" className="text-white text-4xl font-semibold mb-5">
               OSSC Center Lists
@@ -87,7 +83,6 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Create Button */}
           <button
             onClick={() => setModalOpen(true)} 
             className="bg-white text-[#0575E6] text-[20px] px-14 pb-1 rounded-md shadow-md font-semibold"
@@ -96,7 +91,6 @@ const DashboardPage = () => {
           </button>
         </div>
 
-        {/* Table or No Documents Message */}
         <div className="flex-1 overflow-auto">
           {loading && <div className="text-center text-white text-xl">Loading...</div>}
           {error && (
@@ -111,7 +105,6 @@ const DashboardPage = () => {
             </div>
           )}
 
-          {/* Table of Documents */}
           {paginatedData.length > 0 && (
             <table className="w-full bg-transparent">
               <thead>
@@ -142,7 +135,6 @@ const DashboardPage = () => {
           )}
         </div>
 
-        {/* Pagination Controls */}
         {filteredData.length > itemsPerPage && (
           <div className="flex justify-end mt-4">
             <ReactPaginate
@@ -162,7 +154,6 @@ const DashboardPage = () => {
           </div>
         )}
 
-        {/* User Info and Back Button */}
         <div className="absolute top-18 right-16 flex items-center">
           <div className="flex items-center mr-6">
             <div className="w-10 h-10 rounded-full bg-white mr-2"></div> 
@@ -174,7 +165,6 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Popup Form for Creating OSSC */}
       <CreateOSSCForm isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );

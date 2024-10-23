@@ -1,4 +1,3 @@
-// src/components/CreateOSSCForm.jsx
 import React, { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 
@@ -68,21 +67,20 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Creating OSSC Center with data:', { ...formData, selectedZoneId, selectedWoredaId });
-    // Add your logic to send formData to the endpoint
-    onClose(); // Close the modal after submission
+    onClose(); 
   };
 
   const handleRegionChange = (event) => {
     const regionId = event.target.value;
     setSelectedRegionId(regionId);
-    setSelectedZoneId(''); // Reset zone when region changes
-    setSelectedWoredaId(''); // Reset woreda when region changes
+    setSelectedZoneId(''); 
+    setSelectedWoredaId(''); 
   };
 
   const handleZoneChange = (event) => {
     const zoneId = event.target.value;
     setSelectedZoneId(zoneId);
-    setSelectedWoredaId(''); // Reset woreda when zone changes
+    setSelectedWoredaId(''); 
     
   };
  
@@ -98,7 +96,6 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
         </button>
         <div className="text-xl font-semibold m-8"></div>
         <form onSubmit={handleSubmit}>
-          {/* OSSC Name and Region in one row */}
           <div className="mb-4 flex justify-between">
             <div className="w-1/2 pr-2">
               <label className="block mb-2" htmlFor="osccName">
@@ -137,7 +134,6 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Description Field - Full Width */}
           <div className="mb-4">
             <textarea
               id="description"
@@ -150,7 +146,6 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
             ></textarea>
           </div>
 
-          {/* Zone and Woreda in one row */}
           <div className="mb-4 flex justify-between">
             <div className="w-1/2 pr-2">
               <label className="block mb-2" htmlFor="zone">
@@ -162,7 +157,7 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
                 onChange={handleZoneChange}
                 className="w-full border border-gray-300 p-4 rounded-lg"
                 required
-                disabled={!selectedRegionId} // Disable if no region is selected
+                disabled={!selectedRegionId} 
               >
                 <option value="">Select a zone</option>
                 {loadingZones && <option>Loading zones...</option>}
@@ -198,7 +193,6 @@ const CreateOSSCForm = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* House Number and Phone Number in one row */}
           <div className="mb-4 flex justify-between">
             <div className="w-1/2 pr-2">
               <label className="block mb-2" htmlFor="houseNumber">
