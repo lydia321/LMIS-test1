@@ -20,7 +20,6 @@ const GET_ZONES = gql`
   }
 `;
 
-// GraphQL query with dynamic filtering for woredas
 const GET_WOREDA = gql`
   query GET_WOREDA($where: base_woreda_bool_exp) {
     base_woreda(where: $where) {
